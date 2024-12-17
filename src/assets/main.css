@@ -1,9 +1,32 @@
 @import './base.css';
 
+body {
+  background-color: #fefefe;
+  color: #333;
+}
+
+.container-box {
+  width: 85%;
+  margin: auto;
+}
+.container {
+  padding: 0 2%;
+  width: 80%;
+  margin: auto;
+}
+
+@media (max-width: 986px) {
+  .container {
+    padding: 0 1%;
+    width: 95%;
+    margin: auto;
+  }
+}
+
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* max-width: 1280px; */
+  /* margin: 0 auto; */
+  /* padding: 2rem; */
   font-weight: normal;
 }
 
@@ -23,13 +46,14 @@ a,
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
+    /* display: flex;
+    place-items: center; */
   }
 
   #app {
-    display: grid;
+    /* display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    padding: 0 2rem; */
   }
+
 }
