@@ -3,15 +3,32 @@ import { ref, onMounted } from 'vue';
 import IconSearch from './icons/IconSearch.vue';
 
 const orderId = ref('');
+const historyIds = ref([]);
 
 onMounted(() => {
     const url = new URL(window.location);
     const order_id = url.searchParams.get('order_id')
     orderId.value = order_id;
+
+    loadHistoryIds()
 })
 
+function fillId(id) {
+    orderId.value = id;
+}
+
 function searchHandler() {
+    const orderIds = JSON.parse(localStorage.getItem('orderIds') || "[]");
+    if (orderIds.indexOf(orderId.value) < 0) {
+        orderIds.push(orderId.value);
+    }
     addParameterToURL('order_id', orderId.value)
+    localStorage.setItem('orderIds', JSON.stringify(orderIds));
+}
+
+function loadHistoryIds() {
+    const orderIds = JSON.parse(localStorage.getItem('orderIds') || "[]");
+    historyIds.value = orderIds.slice(0, 3);
 }
 
 function addParameterToURL(paramName, paramValue) {
@@ -26,12 +43,19 @@ function addParameterToURL(paramName, paramValue) {
 <template>
     <div class="search-box">
         <div class="container">
-            <div class="left-box">
-                <textarea v-model="orderId" name="orderId" id="orderId"></textarea>
+            <div class="box">
+                <div class="left-box">
+                    <textarea v-model="orderId" name="orderId" id="orderId"></textarea>
+                </div>
+                <div class="btn-box">
+                    <a @click="searchHandler" href="javascript:;">
+                        <IconSearch fill="#fff"></IconSearch>
+                    </a>
+                </div>
             </div>
-            <div class="btn-box">
-                <a @click="searchHandler" href="javascript:;"><IconSearch fill="#fff"></IconSearch></a>
-            </div>
+            <ul class="history">
+                <li v-for="item in historyIds"><a href="javascript:;" @click="fillId(item)">{{ item }}</a></li>
+            </ul>
         </div>
     </div>
 </template>
@@ -40,12 +64,30 @@ function addParameterToURL(paramName, paramValue) {
 .container {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     padding: 1rem 0;
     align-items: center;
 }
+
+.box {
+    display: flex;
+    justify-content: center;
+}
+
+.history {
+    width: 610px;
+    display: flex;
+    flex-flow: wrap;
+
+    li {
+        margin-right: 8px;
+    }
+}
+
 .left-box {
     width: 500px;
 }
+
 textarea {
     border-radius: 3px;
     border-color: #ccc;
@@ -56,6 +98,7 @@ textarea {
 
 .btn-box {
     margin-left: 50px;
+
     a {
         display: block;
         width: 60px;
@@ -63,10 +106,12 @@ textarea {
         padding: 10px;
         background: #f9a633;
         border-radius: 3px;
+
         &:hover {
             transform: scale(1.03);
         }
     }
+
     svg {
         width: 100%;
         height: 100%;
