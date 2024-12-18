@@ -14,8 +14,24 @@ onMounted(() => {
   const order_id = url.searchParams.get('order_id')
 
   apiGetTrack(order_id).then(res => {
-    console.log(res);
-    cargo.value = res.data
+    if (res.code == 0) {
+      cargo.value = res.data.map(ele => {
+        const temp = JSON.parse(ele.history);
+        const history = temp.sort((a, b) => new Date(a.updateTime).getTime() - new Date(b.updateTime).getTime()).map(ele => ({
+          ...ele,
+          on: true
+        }))
+        history[history.length - 1].on = false;
+
+        console.log(history);
+        return {
+          ...ele,
+          history: history,
+          historyLen: history.length,
+          lastState: history[history.length - 1]
+        }
+      })
+    }
   })
 })
 </script>
