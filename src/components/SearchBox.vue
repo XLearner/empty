@@ -119,8 +119,28 @@ textarea {
 }
 
 @media (max-width: 768px) {
+    .box {
+        width: 80%;
+    }
     .left-box {
-        width: 70%;
+        width: 100%;
+
+        textarea {
+            height: 80%;
+        }
+    }
+
+    .history {
+        width: 80%;
+    }
+
+    .btn-box {
+        margin-left: 10px;
+
+        a {
+            width: 40px;
+            height: 40px;
+        }
     }
 }
 </style>
