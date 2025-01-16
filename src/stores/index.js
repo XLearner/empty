@@ -16,7 +16,6 @@ export const useBaseInfoStore = defineStore('baseInfo', () => {
   const baseInfo = ref({})
 
   function refresh() {
-    console.log(2);
     apiGetBaseInfo('中瀚').then((res) => {
       if (res.code == 0) {
         baseInfo.value = res.data;

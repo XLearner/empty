@@ -4,11 +4,14 @@ import IconTransport from './icons/IconTransport.vue';
 import IconSuccess from './icons/IconSuccess.vue';
 import { countryMap } from '@/utils/country';
 import IconCopy from './icons/IconCopy.vue';
+import QRCode from 'qrcode';
+import { ref } from 'vue';
 
 const grey = "#b2bbbe";
 const green = '#45b787';
 const routeMess = defineModel();
 const enumState = ["待上网", "运输中", "派送中", "投递失败", "成功签收", "可能异常"];
+const qrcode = ref('');
 
 // 复制到剪贴板
 function copyToClipboard(text) {
@@ -31,6 +34,13 @@ function copyId() {
 function copyLink() {
     copyToClipboard(window.location);
     alert('复制成功');
+}
+
+function toQRCode() {
+    const url = location.href;
+    QRCode.toString(url, { type: 'terminal' }, (err, url) => {
+        qrcode.value = url;
+    })
 }
 
 function copyDetail() {
@@ -100,6 +110,12 @@ function transTime(date) {
                 <div class="details-bottom">
                     <div class="btn"><a class="copy-detail" href="javascript:;" @click="copyDetail">复制详细</a></div>
                     <div class="btn"><a class="copy-link" href="javascript:;" @click="copyLink">复制链接</a></div>
+                    <div class="btn"><a class="copy-link" href="javascript:;" @click="toQRCode">生成二维码</a></div>
+                </div>
+                <div class="qrcode-box" v-if="qrcode">
+                    <div class="qrcode" v-html="qrcode"></div>
+                    <p>单号：{{ routeMess[0].id }}</p>
+                    <p>手机扫码查看物流信息</p>
                 </div>
             </div>
         </div>
@@ -215,6 +231,19 @@ function transTime(date) {
 
     .btn {
         margin-right: 10px;
+    }
+}
+
+.qrcode-box {
+    width: 200px;
+    margin-top: 10px;
+
+    .qrcode {
+        width: 200px;
+        height: 200px;
+    }
+    p {
+        text-align: center;
     }
 }
 
