@@ -13,7 +13,11 @@ onMounted(() => {
   const url = new URL(window.location);
   const order_id = url.searchParams.get('order_id')
 
-  apiGetTrack(order_id).then(res => {
+  getTrack(order_id);
+})
+
+function getTrack(id) {
+  apiGetTrack(id).then(res => {
     if (res.code == 0) {
       cargo.value = res.data.map(ele => {
         const temp = JSON.parse(ele.history);
@@ -23,7 +27,6 @@ onMounted(() => {
         }))
         history[history.length - 1].on = false;
 
-        console.log(history);
         return {
           ...ele,
           history: history,
@@ -33,7 +36,7 @@ onMounted(() => {
       })
     }
   })
-})
+}
 </script>
 
 <template>
@@ -41,7 +44,7 @@ onMounted(() => {
   <!-- <main>
     <TheWelcome />
   </main> -->
-  <SearchBox></SearchBox>
+  <SearchBox @search="getTrack"></SearchBox>
 
   <ContentBox v-model="cargo" v-if="cargo.length > 0"></ContentBox>
   <div v-else>

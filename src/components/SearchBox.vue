@@ -4,6 +4,7 @@ import IconSearch from './icons/IconSearch.vue';
 
 const orderId = ref('');
 const historyIds = ref([]);
+const emit = defineEmits(['search'])
 
 onMounted(() => {
     const url = new URL(window.location);
@@ -18,12 +19,21 @@ function fillId(id) {
 }
 
 function searchHandler() {
-    const orderIds = JSON.parse(localStorage.getItem('orderIds') || "[]");
-    if (orderIds.indexOf(orderId.value) < 0) {
-        orderIds.push(orderId.value);
+    addToStore(orderId.value);
+    addParameterToURL('order_id', orderId.value);
+    emit('search', orderId.value);
+}
+
+function addToStore(val) {
+    try {
+        const orderIds = JSON.parse(localStorage.getItem('orderIds') || "[]");
+        if (orderIds.indexOf(val) < 0) {
+            orderIds.push(val);
+        }
+        localStorage.setItem('orderIds', JSON.stringify(orderIds));
+    } catch (error) {
+        console.error(new Error('AddToStore Error'));
     }
-    addParameterToURL('order_id', orderId.value)
-    localStorage.setItem('orderIds', JSON.stringify(orderIds));
 }
 
 function loadHistoryIds() {
@@ -122,6 +132,7 @@ textarea {
     .box {
         width: 80%;
     }
+
     .left-box {
         width: 100%;
 
